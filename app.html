@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f1e8">
+    <meta name="description" content="45 Days Challenge - Track your daily routine and health goals">
+    <title>Days Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f1e8;
+            color: #3d3d3d;
+            padding: 16px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            border-bottom: 2px solid #d4a574;
+            padding-bottom: 16px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #6b5b4f;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #6b5b4f;
+        }
+
+        .editable-field {
+            display: inline-block;
+            padding: 4px 8px;
+            border: 1px solid #d4a574;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .editable-field:hover {
+            background-color: #faf8f3;
+            border-color: #c4956f;
+        }
+
+        .editable-field input {
+            border: none;
+            background: transparent;
+            font-size: inherit;
+            font-weight: inherit;
+            color: inherit;
+            text-align: center;
+            width: auto;
+        }
+
+        .editable-field input[type="number"] {
+            width: 50px;
+        }
+
+        .editable-field input[type="date"] {
+            width: 100%;
+        }
+
+        .editable-field input:focus {
+            outline: none;
+        }
+
+        .editable-field input[type="number"]::-webkit-outer-spin-button,
+        .editable-field input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .editable-field input[type="number"] {
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+
+        .section {
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #6b5b4f;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #e8e4dc;
+            padding-bottom: 8px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0ede7;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #d4a574;
+        }
+
+        .checklist-item label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .checklist-item input[type="checkbox"]:checked + label {
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .column-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .column-section .section-title {
+            margin-bottom: 8px;
+        }
+
+        .heart-divider {
+            text-align: center;
+            font-size: 20px;
+            color: #d4a574;
+            margin: 20px 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background-color: #d4a574;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #c4956f;
+        }
+
+        .btn-secondary {
+            background-color: #f0ede7;
+            color: #6b5b4f;
+            border: 1px solid #d4a574;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e8e4dc;
+        }
+
+        .install-prompt {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .install-prompt.show {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .install-prompt button {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px;
+                border-radius: 8px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-info {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            body {
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .container {
+                padding: 12px;
+            }
+
+            .title {
+                font-size: 20px;
+            }
+
+            .info-value {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 14px;
+            }
+
+            .checklist-item label {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">✦ Days Challenge ✦</div>
+            <div class="progress-info">
+                <div class="info-item">
+                    <div class="info-label">Progress</div>
+                    <div class="info-value editable-field" id="progressField">
+                        <input type="number" id="currentDay" min="1" max="999" value="1"> / <input type="number" id="totalDays" min="1" max="999" value="45">
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Date</div>
+                    <div class="info-value editable-field" id="dateField">
+                        <input type="date" id="dateInput">
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Day</div>
+                    <div class="info-value" id="dayName">Monday</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Morning Routine</div>
+            <div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="wakeup" class="daily-task">
+                    <label for="wakeup">Wakeup time ⏰ 6:00 am</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="water" class="daily-task">
+                    <label for="water">Drink warm water</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="breathing" class="daily-task">
+                    <label for="breathing">Breathing Exercise</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="workout" class="daily-task">
+                    <label for="workout">30 minutes workout</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="reading" class="daily-task">
+                    <label for="reading">Read 10 pages</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="affirmations" class="daily-task">
+                    <label for="affirmations">Write affirmations ♡</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="two-column">
+            <div class="column-section">
+                <div class="section-title">Health</div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="steps" class="daily-task">
+                    <label for="steps">10k steps</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="sleep" class="daily-task">
+                    <label for="sleep">8 hours sleep</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="nosugar" class="daily-task">
+                    <label for="nosugar">No sugar</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="nojunk" class="daily-task">
+                    <label for="nojunk">No junk</label>
+                </div>
+            </div>
+
+            <div class="column-section">
+                <div class="section-title">Skincare</div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="skincare" class="daily-task">
+                    <label for="skincare">Skincare</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="haircare" class="daily-task">
+                    <label for="haircare">Haircare</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="medications" class="daily-task">
+                    <label for="medications">Medications</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Digital Wellness</div>
+            <div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="noscreen" class="daily-task">
+                    <label for="noscreen">Morning hour without screen</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="noscrolling" class="daily-task">
+                    <label for="noscrolling">No scrolling</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="heart-divider">♡</div>
+
+        <div class="section">
+            <div class="section-title">Night Routine</div>
+            <div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="mealplan" class="daily-task">
+                    <label for="mealplan">Plan meal day in advance</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="mobileaway" class="daily-task">
+                    <label for="mobileaway">Mobile away before sleep</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-secondary" onclick="resetDay()">Reset Day</button>
+            <button class="btn-primary" onclick="nextDay()">Next Day</button>
+        </div>
+    </div>
+
+    <div class="install-prompt" id="installPrompt">
+        <strong>Install App</strong>
+        <p style="font-size: 12px; margin: 8px 0; color: #666;">Add to your home screen for quick access</p>
+        <button class="btn-primary" onclick="installApp()">Install</button>
+        <button class="btn-secondary" onclick="dismissInstall()">Later</button>
+    </div>
+
+    <script>
+        const MANIFEST_DATA = {
+            "name": "45 Days Challenge",
+            "short_name": "45 Days",
+            "description": "Track your daily routine and health goals for 45 days",
+            "start_url": "/",
+            "scope": "/",
+            "display": "standalone",
+            "orientation": "portrait-primary",
+            "background_color": "#f5f1e8",
+            "theme_color": "#d4a574",
+            "icons": [
+                {
+                    "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23f5f1e8' width='192' height='192'/><text x='50%' y='50%' font-size='80' font-weight='bold' text-anchor='middle' dominant-baseline='middle' fill='%236b5b4f'>45</text></svg>",
+                    "sizes": "192x192",
+                    "type": "image/svg+xml",
+                    "purpose": "any"
+                },
+                {
+                    "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%23f5f1e8' width='512' height='512'/><text x='50%' y='50%' font-size='200' font-weight='bold' text-anchor='middle' dominant-baseline='middle' fill='%236b5b4f'>45</text></svg>",
+                    "sizes": "512x512",
+                    "type": "image/svg+xml",
+                    "purpose": "any maskable"
+                }
+            ],
+            "categories": ["productivity", "lifestyle"],
+            "screenshots": [
+                {
+                    "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23f5f1e8' width='540' height='720'/><text x='50%' y='100' font-size='40' font-weight='bold' text-anchor='middle' fill='%236b5b4f'>45 Days Challenge</text></svg>",
+                    "sizes": "540x720",
+                    "type": "image/svg+xml",
+                    "form_factor": "narrow"
+                }
+            ]
+        };
+
+        const SW_CODE = `
+const CACHE_NAME = 'challenge-v1';
+const urlsToCache = [
+  '/',
+  '/app.html'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+  );
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request).then(response => {
+          if (!response || response.status !== 200 || response.type !== 'basic') {
+            return response;
+          }
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME)
+            .then(cache => {
+              cache.put(event.request, responseToCache);
+            });
+          return response;
+        });
+      })
+      .catch(() => {
+        return new Response('Offline - cached version not available', {
+          status: 503,
+          statusText: 'Service Unavailable',
+          headers: new Headers({
+            'Content-Type': 'text/plain'
+          })
+        });
+      })
+  );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+`;
+
+        let deferredPrompt;
+        const STORAGE_KEY = 'challengeData';
+
+        function registerManifest() {
+            const manifestBlob = new Blob([JSON.stringify(MANIFEST_DATA)], { type: 'application/json' });
+            const manifestUrl = URL.createObjectURL(manifestBlob);
+            
+            let manifestLink = document.querySelector('link[rel="manifest"]');
+            if (!manifestLink) {
+                manifestLink = document.createElement('link');
+                manifestLink.rel = 'manifest';
+                document.head.appendChild(manifestLink);
+            }
+            manifestLink.href = manifestUrl;
+        }
+
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                const swBlob = new Blob([SW_CODE], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(swBlob);
+                
+                navigator.serviceWorker.register(swUrl).catch(err => {
+                    console.log('SW registration failed:', err);
+                });
+            }
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installPrompt').classList.add('show');
+        });
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('App installed');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installPrompt').classList.remove('show');
+                });
+            }
+        }
+
+        function dismissInstall() {
+            document.getElementById('installPrompt').classList.remove('show');
+        }
+
+        function initializeApp() {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('dateInput');
+            dateInput.value = today;
+            updateDayName();
+
+            dateInput.addEventListener('change', (e) => {
+                updateDayName();
+                loadDayData(e.target.value);
+            });
+
+            loadDayData(today);
+        }
+
+        function updateDayName() {
+            const dateInput = document.getElementById('dateInput');
+            const date = new Date(dateInput.value + 'T00:00:00');
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            document.getElementById('dayName').textContent = days[date.getDay()];
+        }
+
+        function loadDayData(dateStr) {
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            const dayData = data[dateStr] || {};
+
+            document.querySelectorAll('.daily-task').forEach(checkbox => {
+                checkbox.checked = dayData[checkbox.id] || false;
+            });
+
+            updateProgress();
+        }
+
+        function saveDayData() {
+            const dateInput = document.getElementById('dateInput');
+            const dateStr = dateInput.value;
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+
+            const dayData = {};
+            document.querySelectorAll('.daily-task').forEach(checkbox => {
+                dayData[checkbox.id] = checkbox.checked;
+            });
+
+            data[dateStr] = dayData;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            const completedDays = Object.keys(data).filter(date => {
+                const dayData = data[date];
+                const tasks = Object.values(dayData);
+                return tasks.length > 0 && tasks.every(task => task === true);
+            }).length;
+
+            document.getElementById('currentDay').textContent = Math.min(completedDays + 1, 45);
+        }
+
+        function resetDay() {
+            if (confirm('Reset all tasks for today?')) {
+                document.querySelectorAll('.daily-task').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                saveDayData();
+            }
+        }
+
+        function nextDay() {
+            const dateInput = document.getElementById('dateInput');
+            const currentDate = new Date(dateInput.value + 'T00:00:00');
+            currentDate.setDate(currentDate.getDate() + 1);
+            const nextDateStr = currentDate.toISOString().split('T')[0];
+            dateInput.value = nextDateStr;
+            updateDayName();
+            loadDayData(nextDateStr);
+        }
+
+        function saveProgressValues() {
+            const currentDay = document.getElementById('currentDay').value;
+            const totalDays = document.getElementById('totalDays').value;
+            localStorage.setItem('currentDay', currentDay);
+            localStorage.setItem('totalDays', totalDays);
+        }
+
+        function loadProgressValues() {
+            const currentDay = localStorage.getItem('currentDay') || '1';
+            const totalDays = localStorage.getItem('totalDays') || '45';
+            document.getElementById('currentDay').value = currentDay;
+            document.getElementById('totalDays').value = totalDays;
+        }
+
+        document.querySelectorAll('.daily-task').forEach(checkbox => {
+            checkbox.addEventListener('change', saveDayData);
+        });
+
+        document.getElementById('currentDay').addEventListener('change', saveProgressValues);
+        document.getElementById('totalDays').addEventListener('change', saveProgressValues);
+
+        registerManifest();
+        registerServiceWorker();
+        loadProgressValues();
+        initializeApp();
+    </script>
+</body>
+</html>
